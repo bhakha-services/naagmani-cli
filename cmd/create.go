@@ -98,23 +98,23 @@ func createGoPlugin(name, targetDir string) error {
 		return fmt.Errorf("writing plugin.json: %w", err)
 	}
 
-	hdkRelPath := findRelativeHDKPath(targetDir, "naagmani-hdk-go")
+	hdkRelPath := findRelativeHDKPath(targetDir, "go")
 	var goModContent string
 	if hdkRelPath != "" {
 		goModContent = fmt.Sprintf(`module %s
 
 go 1.22
 
-require github.com/bhakha-services/naagmani-hdk-go v0.1.0
+require github.com/bhakha-services/naagmani-plugins/hdk/go v0.1.0
 
-replace github.com/bhakha-services/naagmani-hdk-go => %s
+replace github.com/bhakha-services/naagmani-plugins/hdk/go => %s
 `, name, filepath.ToSlash(hdkRelPath))
 	} else {
 		goModContent = fmt.Sprintf(`module %s
 
 go 1.22
 
-require github.com/bhakha-services/naagmani-hdk-go v0.1.0
+require github.com/bhakha-services/naagmani-plugins/hdk/go v0.1.0
 `, name)
 	}
 	if err := os.WriteFile(filepath.Join(targetDir, "go.mod"), []byte(goModContent), 0644); err != nil {
@@ -126,7 +126,7 @@ require github.com/bhakha-services/naagmani-hdk-go v0.1.0
 import (
 	"log"
 
-	"github.com/bhakha-services/naagmani-hdk-go/plugin"
+	"github.com/bhakha-services/naagmani-plugins/hdk/go/plugin"
 )
 
 func main() {
@@ -215,7 +215,7 @@ func createNodePlugin(name, targetDir string) error {
 		return fmt.Errorf("writing plugin.json: %w", err)
 	}
 
-	hdkRelPath := findRelativeHDKPath(targetDir, "naagmani-hdk-node")
+	hdkRelPath := findRelativeHDKPath(targetDir, "node")
 	hdkDep := "^0.1.0"
 	if hdkRelPath != "" {
 		hdkDep = "file:" + filepath.ToSlash(hdkRelPath)
@@ -338,7 +338,7 @@ func createPythonPlugin(name, targetDir string) error {
 		return fmt.Errorf("writing plugin.json: %w", err)
 	}
 
-	hdkRelPath := findRelativeHDKPath(targetDir, "naagmani-hdk-python")
+	hdkRelPath := findRelativeHDKPath(targetDir, "python")
 
 	pyproject := fmt.Sprintf(`[build-system]
 requires = ["setuptools>=61.0"]
@@ -410,7 +410,7 @@ python main.py
 	return nil
 }
 
-func findRelativeHDKPath(targetDir, hdkName string) string {
+func findRelativeHDKPath(targetDir, lang string) string {
 	absTarget, err := filepath.Abs(targetDir)
 	if err != nil {
 		return ""
@@ -427,19 +427,19 @@ func findRelativeHDKPath(targetDir, hdkName string) string {
 	for _, root := range searchRoots {
 		curr := root
 		for i := 0; i < 6; i++ {
-			candidate := filepath.Join(curr, "tools", hdkName)
-			if info, err := os.Stat(candidate); err == nil && info.IsDir() {
-				if rel, err := filepath.Rel(absTarget, candidate); err == nil {
-					return rel
-				}
-				return candidate
+			candidates := []string{
+				filepath.Join(curr, "hdk", lang),
+				filepath.Join(curr, "naagmani-plugins", "hdk", lang),
+				filepath.Join(curr, "tools", "naagmani-hdk-"+lang),
+				filepath.Join(curr, "naagmani-hdk-"+lang),
 			}
-			candidateDirect := filepath.Join(curr, hdkName)
-			if info, err := os.Stat(candidateDirect); err == nil && info.IsDir() {
-				if rel, err := filepath.Rel(absTarget, candidateDirect); err == nil {
-					return rel
+			for _, candidate := range candidates {
+				if info, err := os.Stat(candidate); err == nil && info.IsDir() {
+					if rel, err := filepath.Rel(absTarget, candidate); err == nil {
+						return rel
+					}
+					return candidate
 				}
-				return candidateDirect
 			}
 			parent := filepath.Dir(curr)
 			if parent == curr {
