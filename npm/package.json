@@ -1,0 +1,47 @@
+{
+  "name": "naagmani",
+  "version": "2.0.0",
+  "description": "Official CLI for the Naagmani Enterprise AI Operating System",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "naagmani": "bin/naagmani.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepack": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bhakha-services/naagmani-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bhakha-services/naagmani-cli/issues"
+  },
+  "homepage": "https://github.com/bhakha-services/naagmani-cli#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "naagmani",
+    "ai-os",
+    "ai",
+    "cli",
+    "byok",
+    "mcp",
+    "firewall",
+    "plugins"
+  ],
+  "author": "Bhakha Services / Naagmani Team",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}
