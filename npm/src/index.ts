@@ -5,7 +5,7 @@ import https from "node:https";
 import os from "node:os";
 import path from "node:path";
 
-const CLI_VERSION = "2.0.0";
+const CLI_VERSION = "1.0.0";
 const GITHUB_REPO = process.env.NAAGMANI_DIST_REPO || "bhakha-services/naagmani-cli";
 const RELEASE_BASE_URL = process.env.NAAGMANI_RELEASE_BASE_URL || `https://github.com/${GITHUB_REPO}/releases/download/v${CLI_VERSION}`;
 

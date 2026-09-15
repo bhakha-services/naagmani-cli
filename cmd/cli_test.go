@@ -332,7 +332,7 @@ func TestCLI_Doctor(t *testing.T) {
 	t.Setenv("HOME", tempHome)
 	t.Setenv("USERPROFILE", tempHome)
 
-	err := RunDoctor("2.0.0")
+	err := RunDoctor("1.0.0")
 	if err != nil {
 		t.Errorf("RunDoctor failed: %v", err)
 	}

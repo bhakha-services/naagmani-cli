@@ -10,7 +10,7 @@ import (
 )
 
 // Version is the single source of truth for Naagmani CLI version.
-const Version = "2.0.0"
+const Version = "1.0.0"
 
 // Deterministic exit codes for CI/CD and automation pipelines
 const (
