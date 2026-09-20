@@ -69,7 +69,7 @@ func ExecuteBudget(args []string) error {
 		fmt.Fprintln(w, "--\t-----\t------\t-----\t----\t---------\t------\t-----------")
 		fmt.Fprintln(w, "bgt_prod_monthly\torganization\tmonthly\t$1,000.00\t$482.31\t$517.69\tHealthy\tHard Deny")
 		fmt.Fprintln(w, "bgt_analytics_dev\tproject\tmonthly\t$100.00\t$84.50\t$15.50\tWarning\tSoft Alert")
-		fmt.Fprintln(w, "bgt_staging_daily\tenvironment\tdaily\t$25.00\t$12.10\t$12.90\tHealthy\tHard Deny")
+		fmt.Fprintln(w, "bgt_test_daily\tenvironment\tdaily\t$25.00\t$12.10\t$12.90\tHealthy\tHard Deny")
 		w.Flush()
 		return nil
 	}

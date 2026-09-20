@@ -245,7 +245,7 @@ func TestCLI_Init(t *testing.T) {
 	// 1. Initial creation
 	err := RunInit(InitOptions{
 		ProjectName: "my-test-ai-app",
-		Environment: "staging",
+		Environment: "test",
 		Force:       false,
 	})
 	if err != nil {
@@ -259,8 +259,8 @@ func TestCLI_Init(t *testing.T) {
 	if !strings.Contains(string(content), "my-test-ai-app") {
 		t.Errorf("expected config to contain project name")
 	}
-	if !strings.Contains(string(content), "staging") {
-		t.Errorf("expected config to contain environment staging")
+	if !strings.Contains(string(content), "test") {
+		t.Errorf("expected config to contain environment test")
 	}
 
 	// 2. Duplicate without force should error

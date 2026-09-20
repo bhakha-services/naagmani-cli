@@ -49,7 +49,7 @@ For headless CI/CD runners and containerized workflows:
 - `NAAGMANI_TOKEN` / `NAAGMANI_API_KEY`: Authentication token or API key for non-interactive execution
 - `NAAGMANI_ORG_ID`: Default Organization identifier context
 - `NAAGMANI_PROJECT_ID`: Default Project identifier context
-- `NAAGMANI_ENVIRONMENT`: Target environment (`development`, `staging`, `production`)
+- `NAAGMANI_ENVIRONMENT`: Target environment (`test`, `production`)
 - `NAAGMANI_DIST_REPO`: Public binary distribution repository (default: `bhakha-services/naagmani-cli`)
 - `NAAGMANI_RELEASE_BASE_URL`: Custom mirror URL for air-gapped binary artifact downloads
 - `NAAGMANI_CLI_PATH`: Explicit path to local custom Go binary

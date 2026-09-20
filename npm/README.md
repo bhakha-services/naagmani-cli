@@ -89,7 +89,7 @@ naagmani logout
 - `NAAGMANI_API_KEY`: API Key authentication
 - `NAAGMANI_ORG_ID`: Default Organization ID context
 - `NAAGMANI_PROJECT_ID`: Default Project ID context
-- `NAAGMANI_ENVIRONMENT`: Target environment (e.g. `development`, `production`)
+- `NAAGMANI_ENVIRONMENT`: Target environment (e.g. `test`, `production`)
 - `NAAGMANI_DIST_REPO`: Public distribution repository (default: `bhakha-services/naagmani-cli`)
 - `NAAGMANI_RELEASE_BASE_URL`: Custom release asset mirror URL
 

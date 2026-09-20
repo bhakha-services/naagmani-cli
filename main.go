@@ -82,7 +82,7 @@ Environment Variables:
   NAAGMANI_API_KEY       API Key for non-interactive authentication
   NAAGMANI_ORG_ID        Default Organization ID
   NAAGMANI_PROJECT_ID    Default Project ID
-  NAAGMANI_ENVIRONMENT   Default Target Environment (e.g. development, production)
+  NAAGMANI_ENVIRONMENT   Default Target Environment (e.g. test, production)
 `, Version)
 }
 
@@ -149,7 +149,7 @@ func main() {
 
 	case "init":
 		initFlags := flag.NewFlagSet("init", flag.ExitOnError)
-		env := initFlags.String("env", "development", "Target environment")
+		env := initFlags.String("env", "test", "Target environment")
 		force := initFlags.Bool("force", false, "Overwrite existing naagmani.yaml")
 		_ = initFlags.Parse(os.Args[2:])
 
