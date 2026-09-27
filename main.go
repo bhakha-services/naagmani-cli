@@ -47,6 +47,17 @@ Project & Configuration:
   init [name]            Initialize a canonical naagmani.yaml project configuration
   config [get|set|list]  Manage local CLI configuration values
 
+Platform Lifecycle & Deployment:
+  platform install       Deploy Naagmani P1 platform on Docker/Compose
+  platform start/stop    Start or stop platform containers
+  platform status        Inspect health and container status (--json)
+  platform logs          Stream container logs (-f, --service os|cloud|portal)
+  platform update        Perform automated platform update with preflight backup
+  platform rollback      Revert to previous known-good release version
+  platform backup        Create snapshot backup of 'naagmani' and 'naagmani_cloud' DBs
+  platform restore       Restore databases from a snapshot backup
+  platform uninstall     Tear down platform containers (--purge-data)
+
 Plugin Lifecycle:
   plugin create <name>   Create a new plugin project (--language go|node|python)
   plugin validate [dir]  Validate plugin.json manifest against protocol rules
@@ -203,6 +214,7 @@ func main() {
 			cloudURL := searchFlags.String("cloud-url", "", "Naagmani Cloud URL")
 			token := searchFlags.String("token", "", "Auth token")
 			orgID := searchFlags.String("org-id", "", "Organization ID")
+			jsonOut := searchFlags.Bool("json", false, "Output in JSON format")
 			_ = searchFlags.Parse(os.Args[3:])
 
 			query := ""
@@ -215,6 +227,7 @@ func main() {
 				CloudURL: *cloudURL,
 				Token:    *token,
 				OrgID:    *orgID,
+				JSON:     *jsonOut,
 			}); err != nil {
 				exitWithError(ExitNetError, "%v", err)
 			}
@@ -227,6 +240,7 @@ func main() {
 			cloudURL := infoFlags.String("cloud-url", "", "Naagmani Cloud URL")
 			token := infoFlags.String("token", "", "Auth token")
 			orgID := infoFlags.String("org-id", "", "Organization ID")
+			jsonOut := infoFlags.Bool("json", false, "Output in JSON format")
 			_ = infoFlags.Parse(os.Args[4:])
 
 			if err := cmd.RunMarketplaceInfo(cmd.MarketplaceInfoOptions{
@@ -234,6 +248,28 @@ func main() {
 				CloudURL:       *cloudURL,
 				Token:          *token,
 				OrgID:          *orgID,
+				JSON:           *jsonOut,
+			}); err != nil {
+				exitWithError(ExitNetError, "%v", err)
+			}
+
+		case "versions":
+			if len(os.Args) < 4 {
+				exitWithError(ExitInvalidArg, "plugin name or ID required\nUsage: naagmani marketplace versions <name>")
+			}
+			verFlags := flag.NewFlagSet("marketplace versions", flag.ExitOnError)
+			cloudURL := verFlags.String("cloud-url", "", "Naagmani Cloud URL")
+			token := verFlags.String("token", "", "Auth token")
+			orgID := verFlags.String("org-id", "", "Organization ID")
+			jsonOut := verFlags.Bool("json", false, "Output in JSON format")
+			_ = verFlags.Parse(os.Args[4:])
+
+			if err := cmd.RunMarketplaceVersions(cmd.MarketplaceVersionsOptions{
+				PluginIDOrName: os.Args[3],
+				CloudURL:       *cloudURL,
+				Token:          *token,
+				OrgID:          *orgID,
+				JSON:           *jsonOut,
 			}); err != nil {
 				exitWithError(ExitNetError, "%v", err)
 			}
@@ -249,6 +285,7 @@ func main() {
 			cloudURL := instFlags.String("cloud-url", "", "Naagmani Cloud URL")
 			token := instFlags.String("token", "", "Auth token")
 			orgID := instFlags.String("org-id", "", "Organization ID")
+			jsonOut := instFlags.Bool("json", false, "Output in JSON format")
 			_ = instFlags.Parse(os.Args[4:])
 
 			if err := cmd.RunMarketplaceInstall(cmd.MarketplaceInstallOptions{
@@ -259,12 +296,13 @@ func main() {
 				CloudURL:       *cloudURL,
 				Token:          *token,
 				OrgID:          *orgID,
+				JSON:           *jsonOut,
 			}); err != nil {
 				exitWithError(ExitNetError, "%v", err)
 			}
 
 		default:
-			exitWithError(ExitInvalidArg, "unknown marketplace subcommand %q (supported: search, info, install)", subcmd)
+			exitWithError(ExitInvalidArg, "unknown marketplace subcommand %q (supported: search, info, versions, install)", subcmd)
 		}
 		os.Exit(ExitSuccess)
 
@@ -752,6 +790,18 @@ func main() {
 
 	case "quota":
 		if err := cmd.ExecuteQuota(os.Args[2:]); err != nil {
+			exitWithError(ExitNetError, "%v", err)
+		}
+		os.Exit(ExitSuccess)
+
+	case "platform":
+		if err := cmd.RunPlatform(os.Args[2:]); err != nil {
+			exitWithError(ExitNetError, "%v", err)
+		}
+		os.Exit(ExitSuccess)
+
+	case "fleet":
+		if err := cmd.RunFleet(os.Args[2:]); err != nil {
 			exitWithError(ExitNetError, "%v", err)
 		}
 		os.Exit(ExitSuccess)

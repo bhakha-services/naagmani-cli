@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -337,3 +340,85 @@ func TestCLI_Doctor(t *testing.T) {
 		t.Errorf("RunDoctor failed: %v", err)
 	}
 }
+
+func TestCLI_MarketplaceCommands(t *testing.T) {
+	// Mock Cloud Marketplace Server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if strings.HasSuffix(r.URL.Path, "/packages") {
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"packages": []map[string]interface{}{
+					{
+						"id":             "pkg_cli_01",
+						"slug":           "cli-test-plugin",
+						"name":           "CLI Test Plugin",
+						"category":       "plugin",
+						"description":    "Test plugin for CLI verification",
+						"tier":           "FREE",
+						"status":         "PUBLISHED",
+						"certified":      true,
+						"latest_version": "1.0.0",
+					},
+				},
+			})
+			return
+		}
+		if strings.Contains(r.URL.Path, "/versions") {
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"versions": []map[string]interface{}{
+					{
+						"version": "1.0.0",
+						"status":  "PUBLISHED",
+						"artifact": map[string]interface{}{
+							"digest": "sha256:1234567890abcdef",
+							"size":   4096,
+						},
+						"release_notes": "Initial release",
+					},
+				},
+			})
+			return
+		}
+		if strings.Contains(r.URL.Path, "/packages/cli-test-plugin") {
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"id":             "pkg_cli_01",
+				"slug":           "cli-test-plugin",
+				"name":           "CLI Test Plugin",
+				"category":       "plugin",
+				"tier":           "FREE",
+				"status":         "PUBLISHED",
+				"certified":      true,
+				"latest_version": "1.0.0",
+				"description":    "Test plugin for CLI verification",
+			})
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer ts.Close()
+
+	// 1. Test Search (text and JSON)
+	if err := RunMarketplaceSearch(MarketplaceSearchOptions{CloudURL: ts.URL, Query: "test"}); err != nil {
+		t.Fatalf("search failed: %v", err)
+	}
+	if err := RunMarketplaceSearch(MarketplaceSearchOptions{CloudURL: ts.URL, Query: "test", JSON: true}); err != nil {
+		t.Fatalf("search --json failed: %v", err)
+	}
+
+	// 2. Test Info (text and JSON)
+	if err := RunMarketplaceInfo(MarketplaceInfoOptions{CloudURL: ts.URL, PluginIDOrName: "cli-test-plugin"}); err != nil {
+		t.Fatalf("info failed: %v", err)
+	}
+	if err := RunMarketplaceInfo(MarketplaceInfoOptions{CloudURL: ts.URL, PluginIDOrName: "cli-test-plugin", JSON: true}); err != nil {
+		t.Fatalf("info --json failed: %v", err)
+	}
+
+	// 3. Test Versions (text and JSON)
+	if err := RunMarketplaceVersions(MarketplaceVersionsOptions{CloudURL: ts.URL, PluginIDOrName: "cli-test-plugin"}); err != nil {
+		t.Fatalf("versions failed: %v", err)
+	}
+	if err := RunMarketplaceVersions(MarketplaceVersionsOptions{CloudURL: ts.URL, PluginIDOrName: "cli-test-plugin", JSON: true}); err != nil {
+		t.Fatalf("versions --json failed: %v", err)
+	}
+}
+

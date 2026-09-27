@@ -1,0 +1,10 @@
+{
+  "installation_id": "inst_1a1f5c4e9cd1f75189636eccdedf478d",
+  "current_stage": "PREFLIGHT",
+  "last_updated": "2026-09-27T09:03:04.8327734Z",
+  "version": "v2.0.0",
+  "channel": "stable",
+  "portal_port": 3000,
+  "cloud_port": 8081,
+  "secrets_preserved": true
+}
