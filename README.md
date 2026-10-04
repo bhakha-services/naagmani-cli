@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="Naagmani Logo" width="80" height="80" />
+</p>
+
 # Naagmani CLI (`naagmani`)
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

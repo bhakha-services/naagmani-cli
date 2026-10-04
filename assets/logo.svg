@@ -1,0 +1,67 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bg-surface { fill: #f0fdf4; stroke: #86efac; stroke-width: 1px; }
+    .gem-stop-1 { stop-color: #059669; }
+    .gem-stop-2 { stop-color: #0d9488; }
+    .gem-stop-3 { stop-color: #0284c7; }
+    .orb-stop-1 { stop-color: #059669; }
+    .orb-stop-2 { stop-color: #0284c7; }
+    .nucleus { fill: #059669; }
+    .nucleus-ring { stroke: #059669; opacity: 0.85; }
+    .ray-emerald { stroke: #059669; }
+    .ray-cyan { stroke: #0284c7; }
+    @media (prefers-color-scheme: dark) {
+      .bg-surface { fill: #07090e; stroke: rgba(16, 185, 129, 0.35); stroke-width: 1px; }
+      .gem-stop-1 { stop-color: #34d399; }
+      .gem-stop-2 { stop-color: #10b981; }
+      .gem-stop-3 { stop-color: #06b6d4; }
+      .orb-stop-1 { stop-color: #10b981; }
+      .orb-stop-2 { stop-color: #38bdf8; }
+      .nucleus { fill: #34d399; }
+      .nucleus-ring { stroke: #34d399; opacity: 0.8; }
+      .ray-emerald { stroke: #34d399; }
+      .ray-cyan { stroke: #06b6d4; }
+    }
+  </style>
+
+  <defs>
+    <linearGradient id="nmGemGrad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+      <stop class="gem-stop-1" />
+      <stop offset="0.5" class="gem-stop-2" />
+      <stop offset="1" class="gem-stop-3" />
+    </linearGradient>
+    <linearGradient id="nmOrbitGrad" x1="2" y1="16" x2="30" y2="16" gradientUnits="userSpaceOnUse">
+      <stop class="orb-stop-1" />
+      <stop offset="1" class="orb-stop-2" />
+    </linearGradient>
+  </defs>
+
+  <!-- Adaptive Theme Rounded Surface -->
+  <rect class="bg-surface" width="32" height="32" rx="8" />
+  
+  <!-- Outer Protective Octagon -->
+  <polygon
+    points="16,4 26,8.5 26,23.5 16,28 6,23.5 6,8.5"
+    stroke="url(#nmGemGrad)"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Inner Gem Facet Lattice -->
+  <polygon
+    points="16,7.5 22.5,11 22.5,21 16,24.5 9.5,21 9.5,11"
+    fill="url(#nmGemGrad)"
+    fill-opacity="0.22"
+    stroke="url(#nmGemGrad)"
+    stroke-width="1.5"
+  />
+
+  <!-- Core Radiant Nucleus & Accents -->
+  <circle class="nucleus" cx="16" cy="16" r="3.2" />
+  <circle class="nucleus-ring" cx="16" cy="16" r="5" stroke-width="0.85" stroke-dasharray="1.5 1.5" />
+  <line stroke="url(#nmGemGrad)" x1="16" y1="4" x2="16" y2="7.5" stroke-width="1.5" stroke-linecap="butt" />
+  <line stroke="url(#nmGemGrad)" x1="16" y1="24.5" x2="16" y2="28" stroke-width="1.5" stroke-linecap="butt" />
+  <line stroke="url(#nmGemGrad)" x1="6" y1="16" x2="9.5" y2="16" stroke-width="1.5" stroke-linecap="butt" />
+  <line stroke="url(#nmGemGrad)" x1="22.5" y1="16" x2="26" y2="16" stroke-width="1.5" stroke-linecap="butt" />
+</svg>
