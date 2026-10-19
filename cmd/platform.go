@@ -235,7 +235,7 @@ Platform Lifecycle & Deployment Commands:
 func runPlatformInstall(args []string) error {
 	fs := flag.NewFlagSet("platform install", flag.ExitOnError)
 	targetDir := fs.String("dir", ".", "Installation directory (default: current directory)")
-	version := fs.String("version", "v2.0.0", "Naagmani release version")
+	version := fs.String("version", "v1.0.1", "Naagmani release version")
 	channel := fs.String("channel", "stable", "Release channel (stable, beta)")
 	portalPort := fs.Int("port-portal", 3000, "Port for Developer Portal UI")
 	cloudPort := fs.Int("port-cloud", 8081, "Port for Cloud API")
@@ -531,7 +531,7 @@ func runPlatformStatus(args []string) error {
 		_ = json.Unmarshal(data, &state)
 	}
 	if state.Version == "" {
-		state.Version = "v2.0.0"
+		state.Version = "v1.0.1"
 	}
 	if state.PortalPort == 0 {
 		state.PortalPort = 3000
@@ -780,7 +780,7 @@ func runPlatformBackup(args []string) error {
 		"timestamp":    timestamp,
 		"os_backup":    filepath.Base(osBackupFile),
 		"cloud_backup": filepath.Base(cloudBackupFile),
-		"version":      "v2.0.0",
+		"version":      "v1.0.1",
 	}
 	metaBytes, _ := json.MarshalIndent(meta, "", "  ")
 	_ = os.WriteFile(metaPath, metaBytes, 0644)
@@ -1383,7 +1383,7 @@ services:
       - naagmani-network
 
   naagmani-os:
-    image: ghcr.io/bhakha-services/naagmani-os:${NAAGMANI_VERSION:-v2.0.0}
+    image: ghcr.io/bhakha-services/naagmani-os:${NAAGMANI_VERSION:-v1.0.1}
     container_name: naagmani-os
     restart: unless-stopped
     environment:
@@ -1411,7 +1411,7 @@ services:
       - naagmani-network
 
   naagmani-cloud:
-    image: ghcr.io/bhakha-services/naagmani-cloud:${NAAGMANI_VERSION:-v2.0.0}
+    image: ghcr.io/bhakha-services/naagmani-cloud:${NAAGMANI_VERSION:-v1.0.1}
     container_name: naagmani-cloud
     restart: unless-stopped
     ports:
@@ -1440,7 +1440,7 @@ services:
       - naagmani-network
 
   naagmani-developer:
-    image: ghcr.io/bhakha-services/naagmani-developer:${NAAGMANI_VERSION:-v2.0.0}
+    image: ghcr.io/bhakha-services/naagmani-developer:${NAAGMANI_VERSION:-v1.0.1}
     container_name: naagmani-developer
     restart: unless-stopped
     ports:
@@ -1512,7 +1512,7 @@ func runPlatformRegister(args []string) error {
 	regPayload := map[string]interface{}{
 		"organization_id":    *orgID,
 		"os_installation_id": instID,
-		"platform_version":   "v2.0.0",
+		"platform_version":   "v1.0.1",
 		"deployment_type":    "self_hosted",
 		"edition":            *edition,
 		"environment":        "production",

@@ -256,7 +256,7 @@ func runPlatformUpdateCheck(args []string) error {
 		_ = json.Unmarshal(data, &state)
 	}
 	if state.Version == "" {
-		state.Version = "v2.0.0"
+		state.Version = "v1.0.1"
 	}
 
 	currentVer := state.Version
@@ -480,7 +480,7 @@ func ExecuteOrchestratedUpgrade(
 		_ = json.Unmarshal(data, &state)
 	}
 	if state.Version == "" {
-		state.Version = "v2.0.0"
+		state.Version = "v1.0.1"
 	}
 	if channel == "" {
 		channel = "stable"
