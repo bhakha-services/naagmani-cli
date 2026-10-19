@@ -7,8 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 	"time"
 )
@@ -54,12 +52,14 @@ func runFleetList(args []string) error {
 	jsonOutput := fs.Bool("json", false, "Output machine-readable JSON")
 	_ = fs.Parse(args)
 
-	cfg := loadCLIConfig()
-	if *orgID == "org_default" && cfg.OrgID != "" {
-		*orgID = cfg.OrgID
-	}
-	if *cloudURL == "http://localhost:8081" && cfg.CloudURL != "" {
-		*cloudURL = cfg.CloudURL
+	cfg, _ := LoadCLIConfig()
+	if cfg != nil {
+		if *orgID == "org_default" && cfg.OrgID != "" {
+			*orgID = cfg.OrgID
+		}
+		if *cloudURL == "http://localhost:8081" && cfg.CloudURL != "" {
+			*cloudURL = cfg.CloudURL
+		}
 	}
 
 	endpoint := fmt.Sprintf("%s/v1/organizations/%s/fleet/installations", strings.TrimRight(*cloudURL, "/"), *orgID)
@@ -345,14 +345,4 @@ func runFleetRollout(args []string) error {
 	fmt.Println("if any canary or batch installation reports health degradation.")
 	fmt.Println("================================================================================")
 	return nil
-}
-
-func loadCLIConfig() Config {
-	home, _ := os.UserHomeDir()
-	path := filepath.Join(home, ".naagmani", "config.json")
-	var cfg Config
-	if data, err := os.ReadFile(path); err == nil {
-		_ = json.Unmarshal(data, &cfg)
-	}
-	return cfg
 }

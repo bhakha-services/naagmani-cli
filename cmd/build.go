@@ -198,6 +198,14 @@ func RunPluginBuild(opts BuildOptions) (*BuildResult, error) {
 			entryName = manifest.Runtime.Args[0]
 		}
 		candidateEntry := filepath.Join(targetDistDir, entryName)
+		if strings.HasPrefix(manifest.Runtime.Command, "./") || strings.HasPrefix(manifest.Runtime.Command, ".\\") || strings.Contains(manifest.Runtime.Command, "/") || strings.Contains(manifest.Runtime.Command, "\\") {
+			cleanCmd := strings.TrimPrefix(manifest.Runtime.Command, "./")
+			cleanCmd = strings.TrimPrefix(cleanCmd, ".\\")
+			launcherEntry := filepath.Join(targetDistDir, cleanCmd)
+			if _, err := os.Stat(launcherEntry); err == nil {
+				candidateEntry = launcherEntry
+			}
+		}
 		if _, err := os.Stat(candidateEntry); err == nil {
 			primaryPath = candidateEntry
 			binHash, _ = computeFileSHA256(candidateEntry)

@@ -119,7 +119,7 @@ func RunPluginPackage(opts PackageOptions) (*PackageResult, error) {
 		tarName := filepath.ToSlash(relPath)
 
 		mode := int64(0644)
-		if info.Mode()&0111 != 0 || strings.HasSuffix(tarName, ".exe") || tarName == manifest.Name {
+		if info.Mode()&0111 != 0 || strings.HasSuffix(tarName, ".exe") || tarName == manifest.Name || strings.HasPrefix(tarName, "bin/") || strings.HasSuffix(tarName, ".sh") || strings.HasSuffix(tarName, ".py") {
 			mode = 0755
 		}
 

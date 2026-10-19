@@ -82,12 +82,14 @@ func (m *Manifest) Validate() error {
 	validHooks := map[string]bool{
 		"request.before":  true,
 		"request.after":   true,
+		"provider.before": true,
+		"provider.after":  true,
 		"response.before": true,
 		"response.after":  true,
 	}
 	for _, hook := range m.Hooks {
 		if !validHooks[hook] {
-			return fmt.Errorf("unknown hook: %q (valid: request.before, request.after, response.before, response.after)", hook)
+			return fmt.Errorf("unknown hook: %q (valid: request.before, request.after, provider.before, provider.after, response.before, response.after)", hook)
 		}
 	}
 
