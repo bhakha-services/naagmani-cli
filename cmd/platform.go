@@ -379,6 +379,13 @@ NAAGMANI_ENCRYPTION_KEY=%s
 NAAGMANI_SESSION_SECRET=%s
 
 PAYMENT_GATEWAY=mock
+EMAIL_ENABLED=false
+EMAIL_FROM=
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_SECURITY=starttls
+SMTP_USERNAME=
+SMTP_PASSWORD=
 `, *version, *portalPort, *cloudPort, *portalPort, *cloudPort, *cloudPort, *portalPort, *cloudPort, dbPassword, encKey, sessionSecret)
 
 		_ = os.WriteFile(envPath, []byte(envContent), 0600)
@@ -574,8 +581,8 @@ func runPlatformStatus(args []string) error {
 			"developer": probeStatusText(portalProbe),
 		},
 		Probes: map[string]bool{
-			"os_v1_health":       osProbe,
-			"cloud_health":       cloudProbe,
+			"os_v1_health":      osProbe,
+			"cloud_health":      cloudProbe,
 			"portal_responsive": portalProbe,
 		},
 		Timestamp: time.Now().UTC(),
@@ -666,6 +673,14 @@ func runPlatformDoctor(args []string) error {
 	fmt.Println("================================================================================")
 	fmt.Println("🩺 Naagmani Platform Diagnostics (Doctor)")
 	fmt.Println("================================================================================")
+	emailEnv := loadEnvMap(filepath.Join(absDir, ".env"))
+	if strings.Trim(emailEnv["EMAIL_ENABLED"], "'\"") != "true" {
+		fmt.Println("  Email: disabled (optional; verification and recovery prompts are hidden)")
+	} else if emailEnv["SMTP_HOST"] == "" || emailEnv["EMAIL_FROM"] == "" {
+		fmt.Println("  Email: incomplete configuration; SMTP_HOST and EMAIL_FROM are required")
+	} else {
+		fmt.Println("  Email: configured; use Portal Settings > Send test email to my account to verify delivery")
+	}
 
 	// 1. Host Machine & Preflight Diagnostics
 	preflight := runComprehensivePreflight(3000, 8081)
@@ -1424,6 +1439,13 @@ services:
       NAAGMANI_REDIS_URL: redis://redis:6379
       DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/naagmani_cloud?sslmode=disable
       NAAGMANI_SESSION_SECRET: ${NAAGMANI_SESSION_SECRET}
+      EMAIL_ENABLED: ${EMAIL_ENABLED:-false}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURITY: ${SMTP_SECURITY:-starttls}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       PORTAL_BASE_URL: ${PORTAL_BASE_URL:-http://localhost:3000}
       NAAGMANI_CORS_ALLOWED_ORIGINS: ${NAAGMANI_CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:8081}
     healthcheck:
