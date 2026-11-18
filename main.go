@@ -42,6 +42,7 @@ Authentication & Identity:
   login                  Authenticate with Naagmani Cloud
   logout                 Purge locally stored credentials
   whoami                 Display active authenticated identity and tenant context
+	license request/import/status  Activate and inspect offline installation licenses
 
 Project & Configuration:
   init [name]            Initialize a canonical naagmani.yaml project configuration
@@ -800,6 +801,11 @@ func main() {
 		}
 		os.Exit(ExitSuccess)
 
+	case "license":
+		if err := cmd.RunLicense(os.Args[2:]); err != nil {
+			exitWithError(ExitValError, "%v", err)
+		}
+		os.Exit(ExitSuccess)
 	case "fleet":
 		if err := cmd.RunFleet(os.Args[2:]); err != nil {
 			exitWithError(ExitNetError, "%v", err)
