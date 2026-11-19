@@ -16,7 +16,7 @@ import (
 // RunLicense operates solely against the local OS, including air-gapped hosts.
 func RunLicense(args []string) error {
 	if len(args) == 0 || args[0] == "help" {
-		fmt.Println("Usage: naagmani license request --email owner@example.com --out activation.nareq | import --file license.lic | status\nOptions: --os-url http://localhost:8080; local control-plane credential in NAAGMANI_OS_ADMIN_TOKEN")
+		fmt.Println("Usage: naagmani license request --email owner@example.com --out activation.nareq | import --file license.lic | remove --yes | status\nOptions: --os-url http://localhost:8080; local control-plane credential in NAAGMANI_OS_ADMIN_TOKEN")
 		return nil
 	}
 	fs := flag.NewFlagSet("license "+args[0], flag.ContinueOnError)
@@ -24,6 +24,7 @@ func RunLicense(args []string) error {
 	email := fs.String("email", "", "Configured primary admin email (request only)")
 	output := fs.String("out", "activation.nareq", "Request output path")
 	file := fs.String("file", "", "Encrypted .lic file")
+	yes := fs.Bool("yes", false, "Confirm local license removal; preserves subscription and installation keys")
 	if err := fs.Parse(args[1:]); err != nil {
 		return err
 	}
@@ -60,6 +61,12 @@ func RunLicense(args []string) error {
 	case "status":
 		method = http.MethodGet
 		path = "/v1/entitlements"
+	case "remove":
+		if !*yes {
+			return fmt.Errorf("use license remove --yes to return this host to Free; subscription and installation binding are preserved")
+		}
+		method = http.MethodDelete
+		path = "/v1/installation/license"
 	default:
 		return fmt.Errorf("unknown license command %q", args[0])
 	}

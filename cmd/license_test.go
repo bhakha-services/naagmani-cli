@@ -25,6 +25,10 @@ func TestLicenseHeadlessRequestImportAndStatus(t *testing.T) {
 			}
 			_, _ = w.Write([]byte(`{"installation_id":"inst-headless"}`))
 		case "/v1/installation/license":
+			if r.Method == http.MethodDelete {
+				_, _ = w.Write([]byte(`{"is_default_free":true}`))
+				return
+			}
 			b, _ := io.ReadAll(r.Body)
 			if string(b) != "NAAGMANI-LICENSE-1\ntest-container" {
 				t.Error("license changed")
@@ -57,6 +61,12 @@ func TestLicenseHeadlessRequestImportAndStatus(t *testing.T) {
 	}
 	if calls["/v1/installation/license"] != 1 || calls["/v1/entitlements"] != 1 {
 		t.Fatal(calls)
+	}
+	if err := RunLicense([]string{"remove", "--os-url", server.URL}); err == nil {
+		t.Fatal("removal without explicit confirmation was accepted")
+	}
+	if err := RunLicense([]string{"remove", "--yes", "--os-url", server.URL}); err != nil {
+		t.Fatal(err)
 	}
 	if err := os.WriteFile(lic, []byte(`{"payload":{}}`), 0600); err != nil {
 		t.Fatal(err)
